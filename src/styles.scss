@@ -7,6 +7,20 @@
 // framework component styles
 @import '~@nebular/theme/styles/globals';
 
+/*
+Documentation :
+http://hugeinc.github.io/flexboxgrid-sass/
+*/
+@import '~flexboxgrid-sass/flexboxgrid';
+
+/*
+Responsive font size
+https://github.com/twbs/rfs
+Usage like :
+@include rfs(4rem, border-radius);
+*/
+@import '~rfs/scss';
+
 // install the framework styles
 @include nb-install() {
   @include nb-theme-global();
@@ -51,8 +65,9 @@ section {
     margin-right: -$layout-padding;
   }
 
-  &.full:first-child {
+  &:first-child {
     margin-top: -$layout-padding;
+    height: 0px;
   }
 }
 
@@ -71,3 +86,17 @@ Holder
     margin-right: 1.25rem;
   }
 }
+
+/*
+=================================
+Fonts
+=================================
+*/
+
+/*
+https://fonts.google.com/specimen/Merienda+One?category=Handwriting&sidebar.open&selection.family=Merienda+One
+Usage like
+font-family: 'Merienda One', cursive;
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Merienda+One&display=swap');

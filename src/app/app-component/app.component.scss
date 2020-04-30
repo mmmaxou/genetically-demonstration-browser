@@ -1,0 +1,20 @@
+@import '../../theme.scss';
+@import '../../variables.scss';
+
+nb-layout-header {
+  height: $header-height;
+}
+
+.useful-width {
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+  * {
+    margin-left: 0.75rem;
+  }
+
+  .subtitle {
+    color: nb-theme(color-basic-600);
+  }
+}

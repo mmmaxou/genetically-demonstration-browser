@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {GeneticAlgorithm} from 'genetical';
+import {GeneticAlgorithm} from 'genetically';
 
 type GeneticEnvironmentStatus = 'Running' | 'Stopped';
 

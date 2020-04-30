@@ -1,6 +1,6 @@
-import {CodeStrings} from './code';
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {GeneticAlgorithm} from 'genetically';
+import {levenshtein} from 'src/classes/Levenshtein';
 
 @Component({
   selector: 'app-sentence-example',
@@ -13,8 +13,7 @@ export class SentenceExampleComponent implements OnInit {
   public randomSentence: string;
   public encoded: number[];
   public decoded: string;
-  public code = CodeStrings;
-  public geneticAlgorithm: GeneticAlgorithm<string, number[]>;
+  public geneticAlgorithm: GeneticAlgorithm<string, string>;
 
   constructor() {}
 
@@ -32,44 +31,34 @@ export class SentenceExampleComponent implements OnInit {
   onChangeObjective() {}
 
   createGeneticAlgorithm() {
-    this.geneticAlgorithm = new GeneticAlgorithm<string, number[]>({
-      ...DEFAULT_CONFIGURATION.GENETIC_ALGORITHM,
-      decode: this.decode,
-      encode: this.encode,
-      randomValue: () => '',
-      fitness: () => 1,
-      selection: null,
-      crossover: null,
-      mutation: null,
-      stopCondition: null,
-      afterEach: null,
-    });
+    this.geneticAlgorithm = new GeneticAlgorithm<string, string>(
+      this.encode,
+      this.decode,
+      this.generateRandomSentence,
+      this.fitness
+    );
   }
 
   /**
    *
    * @param sentence A normal string
    */
-  encode(sentence: string): number[] {
-    return sentence.split('').map((character) => {
-      character = character.toLowerCase().replace(' ', '{');
-      return character.charCodeAt(0) - 97;
-    });
+  encode(sentence: string): string {
+    return sentence;
   }
 
   /**
    *
    * @param n CharCode between 0 and 26
    */
-  decode(encodedCharacters: number[]): string {
-    const shiftedCharacters = encodedCharacters.map((n) => n + 97);
-    return String.fromCharCode(...shiftedCharacters).replace(/\{/g, ' ');
+  decode(encodedCharacters: string): string {
+    return encodedCharacters;
   }
 
   /*
    * Create a random sequence of numbers of the length of the objective sentence
    */
-  generateRandomSentence() {
+  generateRandomSentence(): string {
     const l = this.objectiveSentence.length;
 
     // Create an array of the objective's length
@@ -87,8 +76,14 @@ export class SentenceExampleComponent implements OnInit {
       })
       // Join the array of character into a string
       .join('');
-    this.randomSentence = randomSentence;
-    this.encoded = this.encode(this.randomSentence);
-    this.decoded = this.decode(this.encoded);
+    return randomSentence;
+  }
+
+  /**
+   * Fitness function of a given sentence is it's distance to the objective sentence
+   * Use the levenshtein distance function
+   */
+  fitness(sentence: string): number {
+    return levenshtein(sentence, this.objectiveSentence);
   }
 }
