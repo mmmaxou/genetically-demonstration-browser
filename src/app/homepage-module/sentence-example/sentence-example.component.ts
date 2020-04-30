@@ -1,6 +1,6 @@
 import {CodeStrings} from './code';
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import GeneticAlgorithm from 'genetical';
+import {GeneticAlgorithm} from 'genetically';
 
 @Component({
   selector: 'app-sentence-example',

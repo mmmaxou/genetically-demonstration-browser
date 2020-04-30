@@ -24,7 +24,6 @@
     "core-js": "^2.5.4",
     "eva-icons": "^1.1.2",
     "highlight.js": "^9.17.1",
-    "genetical": "file:../genetical",
     "ngx-highlightjs": "^4.0.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
