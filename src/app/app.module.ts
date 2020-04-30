@@ -1,24 +1,15 @@
-import {routes} from './app-routes.module';
-import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {AppComponent} from './app.component';
-import {
-  NbThemeModule,
-  NbLayoutModule,
-  NbButtonModule,
-  NbIconModule,
-  NbInputModule,
-} from '@nebular/theme';
-import {NbEvaIconsModule} from '@nebular/eva-icons';
-import {RouterModule} from '@angular/router';
-import {ParallaxDirective} from './parallax.directive';
-import {GeneticEnvironmentComponent} from './genetic-environment/genetic-environment.component';
-import {SentenceExampleComponent} from './sentence-example/sentence-example.component';
 import {FormsModule} from '@angular/forms';
-import {HighlightModule, HIGHLIGHT_OPTIONS} from 'ngx-highlightjs';
-import css from 'highlight.js/lib/languages/css';
-import typescript from 'highlight.js/lib/languages/typescript';
-import javascript from 'highlight.js/lib/languages/javascript';
+import {BrowserModule} from '@angular/platform-browser';
+import {RouterModule} from '@angular/router';
+import {NbEvaIconsModule} from '@nebular/eva-icons';
+import {NbIconModule, NbLayoutModule, NbThemeModule} from '@nebular/theme';
+import {HighlightModule} from 'ngx-highlightjs';
+import {routes} from './app-routes.module';
+import {CoreModule} from './core-module/core.module';
+import {HomepageModule} from './homepage-module/homepage.module';
+import {UiModule} from './ui-module/ui.module';
+import {AppComponent} from './app-component/app.component';
 
 /**
  * Import specific languages to avoid importing everything
@@ -35,27 +26,25 @@ export function getHighlightLanguages() {
 */
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    GeneticEnvironmentComponent,
-    SentenceExampleComponent,
-    ParallaxDirective,
-  ],
+  declarations: [AppComponent],
   imports: [
+    // Standard
     BrowserModule,
     FormsModule,
-
     RouterModule.forRoot(routes, {useHash: true}), // if this is your app.module
 
+    // My modules
+    UiModule,
+    HomepageModule,
+    CoreModule,
+
+    // Highlight.js
     HighlightModule,
 
     /// Nebular
     NbThemeModule.forRoot(),
-    NbLayoutModule,
-    NbInputModule,
-    NbButtonModule,
     NbEvaIconsModule,
-    NbIconModule,
+    NbLayoutModule,
   ],
   providers: [
     /*

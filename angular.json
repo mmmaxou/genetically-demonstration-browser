@@ -3,14 +3,14 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "demonstration": {
+    "genetical-demonstration-browser": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "sass"
+          "style": "scss"
         }
       },
       "architect": {
@@ -18,7 +18,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
-            "outputPath": "dist/demonstration",
+            "outputPath": "dist/genetical-demonstration-browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -65,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "demonstration:build"
+            "browserTarget": "genetical-demonstration-browser:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "demonstration:build:production"
+              "browserTarget": "genetical-demonstration-browser:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "demonstration:build"
+            "browserTarget": "genetical-demonstration-browser:build"
           }
         },
         "lint": {
@@ -89,5 +89,5 @@
       }
     }
   },
-  "defaultProject": "demonstration"
+  "defaultProject": "genetical-demonstration-browser"
 }

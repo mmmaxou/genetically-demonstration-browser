@@ -1,12 +1,12 @@
-import {Genetical, GeneticAlgorithm, BitChain} from 'genetical';
 import {
-  Component,
-  OnInit,
   ChangeDetectionStrategy,
-  Output,
+  Component,
   EventEmitter,
   Input,
+  OnInit,
+  Output,
 } from '@angular/core';
+import {GeneticAlgorithm} from 'genetical';
 
 type GeneticEnvironmentStatus = 'Running' | 'Stopped';
 

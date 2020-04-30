@@ -1,11 +1,10 @@
 {
-  "name": "demonstration",
+  "name": "genetical-demonstration-browser",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --live-reload false",
-    "build": "ng build --prod --base-href \"genetical\"",
-    "postbuild": "shx rm -rf ../docs && shx mv dist/demonstration ../docs",
+    "build": "ng build --prod",
     "lint": "ng lint"
   },
   "private": true,
@@ -25,6 +24,7 @@
     "core-js": "^2.5.4",
     "eva-icons": "^1.1.2",
     "highlight.js": "^9.17.1",
+    "genetical": "file:../genetical",
     "ngx-highlightjs": "^4.0.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
@@ -35,6 +35,7 @@
     "@angular/cli": "~9.0.1",
     "@angular/compiler-cli": "~9.0.0",
     "@angular/language-service": "~9.0.0",
+    "@schematics/angular": "^9.1.4",
     "@types/highlight.js": "^9.12.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
