@@ -1,4 +1,0 @@
-{
-    //"build": "ng build --prod --base-href \"genetical\"",
-    //"postbuild": "shx rm -rf ../docs && shx mv dist/demonstration ../docs",
-}

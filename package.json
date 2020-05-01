@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --live-reload false",
     "build": "ng build --prod",
+    "postbuild": "shx rm -rf ./docs && shx mv dist/genetical-demonstration-browser ./docs",
     "lint": "ng lint"
   },
   "private": true,
