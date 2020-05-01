@@ -27,16 +27,16 @@ $breakpoints: (
 
 @mixin responsive-image($folder, $filename) {
   @include for-phone-only {
-    background-image: url('/assets/'+$folder+'/800w/'+$filename+'@800w.jpg');
+    background-image: url('assets/' + $folder + '/800w/' + $filename + '@800w.jpg');
   }
   @include for-tablet-up {
-    background-image: url('/assets/'+$folder+'/1400w/'+$filename+'@1400w.jpg');
+    background-image: url('assets/' + $folder + '/1400w/' + $filename + '@1400w.jpg');
   }
   @include for-desktop-up {
-    background-image: url('/assets/'+$folder+'/1x/'+$filename+'@1x.jpg');
+    background-image: url('assets/' + $folder + '/1x/' + $filename + '@1x.jpg');
   }
   @include for-big-desktop-up {
-    background-image: url('/assets/'+$folder+'/2x/'+$filename+'@2x.jpg');
+    background-image: url('assets/' + $folder + '/2x/' + $filename + '@2x.jpg');
   }
   background-size: cover;
 }
