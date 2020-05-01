@@ -1,7 +1,6 @@
 <p>
   In this example, we will try to evolve a chain of characters into a desired
-  string. We start by generating a random chain of character of the same length
-  than the desired string.
+  string.
 </p>
 <p>
   Here, the problem is well defined. We start with a random string, and need to
@@ -13,10 +12,14 @@
 </p>
 <p>
   One way to solve this problem would be to brute force and try every possible
-  solution, but it would take a lot of time. Let's try to solve this problem
-  using a genetic algorithm.
+  solution, but it would take a lot of time. A real lot of time ... Let's try to
+  solve this problem using a genetic algorithm instead.
 </p>
 <h3># Random value function</h3>
+<p>
+  We start by generating a random chain of character of the same length than the
+  desired string.
+</p>
 <p>
   Given the length of the solution, we need to generate a random string of this
   length. Here we can do this using the code below. This random string will be
@@ -33,11 +36,25 @@
   <code [highlight]="generateRandomSentence | functionName:'generateRandomSentence'" [languages]="['javascript']"></code>
 </pre>
 <p>
+  This function will be used by the algorithm to initialize a population. You
+  may ask, why use a population instead of a single random string ? The idea
+  behind this is to enchance variety. We want to mimic the natural evolution.
+  Think of a birds or fishes, if they can survive in the wild, it is because
+  they have the ability to evolve to adapt to the nature. To do this, a
+  population of many birds is required, the birds will live a happy life, mates
+  with each other to reproduce and survive. During the reproduction process, DNA
+  will be copied from both parents, and children will be gifted with this new
+  DNA.
+</p>
+<p>
+  This whole process would not be possible with a single bird, we need a
+  population of bird to copy and evolve DNA. For this exact reason, we use a
+  population of sentences to evolve into a solution.
+</p>
+<p>
   Then we need to define an objective string. For this example, the objective
   string will remain hidden to have more suspense.
 </p>
-
-<label class="label" for="objectiveSentence">Objective sentence</label>
 
 <h3># Encode and decode function</h3>
 <p>
@@ -45,6 +62,14 @@
   the clarity of this example, we will not use any encoding, and simply tell
   Genetically a string should be encoded into the same string. More on encoding
   and decoding later.
+</p>
+<p>
+  Let's get back to our bird example. In a way, a bird is made of DNA, so we can
+  say that the bird is a decoded version of a DNA. The DNA will be then
+  replicated, mutated, selected, and the population will survive and evolve.
+  Here, our decoded version is a sentence. We could encode the sentence into
+  number, and then represent the numbers by their binary code. This would give
+  us a proper DNA, using 0 and 1.
 </p>
 
 <pre>
@@ -68,19 +93,123 @@
   Genetically that the closer a sentence is to the objective sentence, the
   better it is.
 </p>
+<p>
+  In the Wild, there is also a fitness function, but a hidden one. If you
+  understood well, the goal of the fitness function is to tell if a DNA is good
+  or bad. For a bird, this fitness function is very complicated, it takes into
+  account the speed, the ability to find a mate, the ability find food, the
+  ability to escape it's predators, and much more ...
+</p>
+<p>
+  All of this will tell if a bird is good. And only if it is a good one, able to
+  survive, the bird will mate with an other good bird, and they will mix their
+  DNA to make children.
+</p>
 
 <pre>
   <code [highlight]='fitness | functionName: "fitness"' [languages]="['javascript']"></code>
 </pre>
 
-<!-- <input
-  type="text"
-  name="objectiveSentence"
-  nbInput
-  fullWidth
-  [(ngModel)]="objectiveSentence"
-  (input)="onUpdateRandomSentence()"
-/> -->
+<h3># Selection</h3>
+<p>
+  Based on the fitness we can tell which sentence is good and which one is not.
+  For this example, a small fitness mean a sentence has a small distance to the
+  objective sentence, therefore, the smallest the fitness is, the better. We
+  will try to minimize this fitness to get closer and closer to the objective
+  sentence.
+</p>
+<p>
+  At the begining, we have a population made of completely random sentences.
+  Using our fitness function we evaluate them. Then we need to create a new
+  population which is going to be better than the former one by taking the best
+  ones from the former population.
+</p>
+<p>
+  There is a lot of way to do this. We could sort the population based on
+  fitness, and only take the better half of it to create a new one. Maybe we
+  need to copy some of the best sentences into the new population. We could also
+  take random sentences two by two, compore their fitness score, and copy the
+  winner into the new population, and repeat until it's complete.
+</p>
+<p>Here we can really do whatever we want.</p>
+<p>
+  For this example, we will use the default algorithm of Genetically, which is
+  <a href="https://www.sciencedirect.com/science/article/pii/S0378437111009010"
+    >the Roulette-wheel selection via stochastic acceptance</a
+  >
+  algorithm. I will not dive into details on how it works here, but feel free to
+  take a look at the paper.
+</p>
+<p>
+  In the wild, a selection is naturally made. The better birds will have a
+  better life, be able to reproduce more, live longer ...
+</p>
+<p>That's exactly a selection process.</p>
+<p>
+  More on different existing methods
+  <a href="https://en.wikipedia.org/wiki/Selection_(genetic_algorithm)">here</a>
+</p>
+
+<h3># Crossover</h3>
+<p>
+  The goal of this function is to mix together the DNA of two sentences. Here,
+  our sentences are not encoded, so we can see what's happening more easily.
+  Again there is a lot of way to mix together DNAs. The simpler method is to
+  take a part from the first sentence, and the rest from the other parent. It's
+  called the
+  <a
+    href="https://en.wikipedia.org/wiki/Crossover_(genetic_algorithm)#Single-point_crossover"
+  >
+    Single Point Crossover </a
+  >.
+</p>
+<p>A : <span class="red">aaaaaaaaaaaaaaaaaaaaaaaaaaaa</span></p>
+<p>B : <span class="blue">bbbbbbbbbbbbbbbbbbbbbbbbbbbb</span></p>
+<p>
+  The crossover point is a random index, here, let's make it the 5th letter.
+</p>
+<p>
+  Child 1 :
+  <span class="red">aaaaa</span>
+  <span class="blue">bbbbbbbbbbbbbbbbbbbbbbb</span>
+</p>
+<p>
+  Child 2 :
+  <span class="blue">bbbbb</span>
+  <span class="red">aaaaaaaaaaaaaaaaaaaaaaa</span>
+</p>
+
+<p>
+  The crossover we are going to use for the example is close to the single point
+  crossover.
+</p>
+
+<h3># Mutation</h3>
+
+<p>
+  The last step is mutation. The goal of mutation is to keep diversity in a
+  population of genome. If we only make crossovers and selection, the genome
+  will all end up looking like each others. That's why we introduce random
+  mutation, that will modify a genome. The mutation can be a good or a bad one.
+</p>
+<p>
+  A mutation is a small modification of the genome that happens randomly, but is
+  rare. The probability of a mutation happening is very small. By default the
+  probability of a mutation in Genetically is 0,05.
+</p>
+<p>
+  Here, to mutate our sentence, the we will take a random letter in the sentence
+  and shift it by 1. For example, mutating 'Raven' could lead into 'Rzven' or
+  'Paven'.
+</p>
+<p>
+  In this example, crossover and mutation are coded in the same function, and
+  the mutation happens all the time.
+</p>
+<p>
+  More informations on mutations can be found
+  <a href="https://en.wikipedia.org/wiki/Mutation_(genetic_algorithm)">here</a>
+</p>
 
 <h3># Putting it all together</h3>
 <p>
