@@ -13,6 +13,6 @@
     "importHelpers": true,
     "target": "es5",
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"]
+    "lib": ["ES5", "es2018", "dom"]
   }
 }

@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {GeneticAlgorithm} from 'genetically';
+import {GeneticAlgorithm, Population} from 'genetically';
 
 type GeneticEnvironmentStatus = 'Running' | 'Stopped';
 
@@ -20,6 +20,7 @@ export class GeneticEnvironmentComponent implements OnInit {
   @Input() geneticAlgorithm: GeneticAlgorithm<any>;
   @Output() stop = new EventEmitter();
   @Output() start = new EventEmitter();
+  @Output() population = new EventEmitter<Population>();
 
   public status: GeneticEnvironmentStatus = 'Stopped';
 
@@ -34,10 +35,14 @@ export class GeneticEnvironmentComponent implements OnInit {
   runEnv(): void {
     this.status = 'Running';
     this.start.emit();
+    this.geneticAlgorithm.run().then(() => {
+      this.stopEnv();
+    });
   }
 
   stopEnv(): void {
     this.status = 'Stopped';
     this.stop.emit();
+    console.log(this.geneticAlgorithm);
   }
 }

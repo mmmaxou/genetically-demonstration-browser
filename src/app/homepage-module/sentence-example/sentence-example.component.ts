@@ -1,7 +1,16 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {GeneticAlgorithm} from 'genetically';
-import {levenshtein} from 'src/classes/Levenshtein';
-
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
+import {
+  DynamicalCrossover,
+  FitnessFunctionObjective,
+  GeneticAlgorithm,
+  NoMutation,
+  Population,
+} from 'genetically';
 @Component({
   selector: 'app-sentence-example',
   templateUrl: './sentence-example.component.html',
@@ -10,37 +19,109 @@ import {levenshtein} from 'src/classes/Levenshtein';
 })
 export class SentenceExampleComponent implements OnInit {
   public objectiveSentence = 'Earth has few secrets from the birds';
-  public randomSentence: string;
-  public encoded: number[];
-  public decoded: string;
+  public randomSentence = '';
   public geneticAlgorithm: GeneticAlgorithm<string, string>;
+  public fittest: string;
+  public fittestScore: number;
 
-  constructor() {}
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.generateRandomSentence();
+    this.onUpdateRandomSentence();
     this.createGeneticAlgorithm();
+
+    console.log('fitness', this.fitness('azdaz41da7z4 5d1az', ''));
   }
 
   onStartEnvironment() {
+    this.fittest = '';
     console.log('start');
   }
   onStopEnvironment() {
     console.log('stop');
   }
-  onChangeObjective() {}
+  onUpdateRandomSentence() {
+    this.randomSentence = this.generateRandomSentence(
+      this.objectiveSentence.length
+    );
+    this.changeDetectorRef.markForCheck();
+  }
 
   createGeneticAlgorithm() {
     this.geneticAlgorithm = new GeneticAlgorithm<string, string>(
       this.encode,
       this.decode,
-      this.generateRandomSentence,
-      this.fitness
+      () => this.generateRandomSentence(this.objectiveSentence.length),
+      (sentence) => {
+        return this.fitness(sentence, this.objectiveSentence);
+      },
+      {
+        population: {
+          popsize: 1,
+        },
+        mutation: (chain: string) => {
+          const asArr = chain.split('');
+          const randomChainIndex = Math.ceil(Math.random() * chain.length - 1);
+          const charCode =
+            chain.replace(' ', '{').charCodeAt(randomChainIndex) - 97;
+          const nChar = String.fromCharCode(((charCode + 1) % 26) + 97).replace(
+            '{',
+            ' '
+          );
+          asArr[randomChainIndex] = nChar;
+          // asArr[randomChainIndex] = this.objectiveSentence[randomChainIndex];
+          return asArr.join('');
+        },
+        crossover: (chains: string[], mutation) => {
+          return chains.map((chain) => {
+            const asArr = chain.split('');
+            const randomChainIndex = Math.ceil(
+              Math.random() * chain.length - 1
+            );
+            const modulo = (n: number, mod: number) => ((n % mod) + mod) % mod;
+            const charCode =
+              chain.replace(' ', '{').charCodeAt(randomChainIndex) - 97;
+            const nChar = String.fromCharCode(
+              modulo(charCode - 1, 26) + 97
+            ).replace('{', ' ');
+            // asArr[randomChainIndex] = nChar;
+            asArr[randomChainIndex] = this.objectiveSentence[randomChainIndex];
+            const nStr = asArr.join('');
+            if (chain.length !== nStr.length) {
+              console.log('nStr', nStr);
+              console.log('chain', chain);
+              throw new Error('Error in size before mutation');
+            }
+            const mStr = mutation.mutation(nStr);
+            if (chain.length !== nStr.length) {
+              throw new Error('Error in size after mutation');
+            }
+            return mStr;
+          });
+        },
+        // crossover: new NoCrossover(),
+        objective: FitnessFunctionObjective.MINIMIZE,
+        iterations: 2500,
+        afterEach: (pop: Population<string>) => {
+          this.fittest = pop.fittest.chain;
+          this.fittestScore = pop.fittest.fitnessScore;
+          console.log(this.fittest.length);
+          this.changeDetectorRef.markForCheck();
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve();
+            }, 20);
+          });
+        },
+        stopCondition: (pop: Population<string>) => {
+          return pop.fittest.fitnessScore === 0;
+        },
+      }
     );
+    this.changeDetectorRef.markForCheck();
   }
 
   /**
-   *
    * @param sentence A normal string
    */
   encode(sentence: string): string {
@@ -48,21 +129,20 @@ export class SentenceExampleComponent implements OnInit {
   }
 
   /**
-   *
    * @param n CharCode between 0 and 26
    */
-  decode(encodedCharacters: string): string {
-    return encodedCharacters;
+  decode(sentence: string): string {
+    return sentence;
   }
 
   /*
    * Create a random sequence of numbers of the length of the objective sentence
    */
-  generateRandomSentence(): string {
-    const l = this.objectiveSentence.length;
-
+  generateRandomSentence(len: number): string {
     // Create an array of the objective's length
-    const randomSentence = Array.from(Array(l))
+    const randomSentence = Array(len)
+      // Make a valid array
+      .fill(undefined)
       // Create a random character for each element
       .map(() => {
         // One random number
@@ -71,8 +151,8 @@ export class SentenceExampleComponent implements OnInit {
         // Convert it into a character
         const c = String.fromCharCode(n + 97);
 
-        // Transform the character corresponding to CharCode 123 to have spaces
-        return c.toLowerCase().replace(' ', '{');
+        // Return
+        return c.replace(/{/g, ' ');
       })
       // Join the array of character into a string
       .join('');
@@ -81,9 +161,13 @@ export class SentenceExampleComponent implements OnInit {
 
   /**
    * Fitness function of a given sentence is it's distance to the objective sentence
-   * Use the levenshtein distance function
    */
-  fitness(sentence: string): number {
-    return levenshtein(sentence, this.objectiveSentence);
+  fitness(sentence: string, objectiveSentence: string): number {
+    return [...sentence].reduce((acc, curr, i) => {
+      const objCode = objectiveSentence.toLowerCase().charCodeAt(i) || 96;
+      const curCode = curr.charCodeAt(0) || 96;
+      const delta = Math.abs(objCode - curCode);
+      return delta + acc;
+    }, 0);
   }
 }

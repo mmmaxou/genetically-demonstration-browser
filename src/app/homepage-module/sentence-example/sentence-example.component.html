@@ -16,19 +16,21 @@
   solution, but it would take a lot of time. Let's try to solve this problem
   using a genetic algorithm.
 </p>
+<h3># Random value function</h3>
 <p>
   Given the length of the solution, we need to generate a random string of this
-  length. Here we can do this using the code below.
+  length. Here we can do this using the code below. This random string will be
+  our starting point.
 </p>
 <div class="holder">
-  <button nbButton ghost status="primary" (click)="generateRandomSentence()">
+  <button nbButton ghost status="primary" (click)="onUpdateRandomSentence()">
     <nb-icon icon="play-circle-outline"></nb-icon>
     Generate new random sentence
   </button>
   <p class="label">{{ randomSentence }}</p>
 </div>
 <pre>
-  <code [highlight]="generateRandomSentence.toString()" [languages]="['javascript']"></code>
+  <code [highlight]="generateRandomSentence | functionName:'generateRandomSentence'" [languages]="['javascript']"></code>
 </pre>
 <p>
   Then we need to define an objective string. For this example, the objective
@@ -36,16 +38,54 @@
 </p>
 
 <label class="label" for="objectiveSentence">Objective sentence</label>
-<input
+
+<h3># Encode and decode function</h3>
+<p>
+  To work, a genetic algorithm require a way to encode and decode a genome. For
+  the clarity of this example, we will not use any encoding, and simply tell
+  Genetically a string should be encoded into the same string. More on encoding
+  and decoding later.
+</p>
+
+<pre>
+  <code [highlight]="(encode | functionName:'encode') + '\t\r\n' + (decode | functionName:'decode')" [languages]="['javascript']"></code>
+</pre>
+
+<h3># Fitness function</h3>
+<p>
+  This is the interesting part. After generating a random sentence, Genetically
+  will apply random changes to it, until it finds the objective sentence. But to
+  do this properly, we need to tell Genetically if a sentence is a good one or
+  bad one. With this information, Genetically will select sentences that are
+  better and better, and will dump the ones that are bad.
+</p>
+<p>
+  We provide this information about the quality of a sentence through a fitness
+  function. This is a function that takes a sentence as input and return a
+  number wich is called the fitness score. It represent the quality of the
+  sentence. For our example, we will compute this fitness using a simple
+  algorithm that measure the difference between two sequences. Using it, we tell
+  Genetically that the closer a sentence is to the objective sentence, the
+  better it is.
+</p>
+
+<pre>
+  <code [highlight]='"function fitness(sentence, objectiveSentence) {\n   return levenshtein(sentence, objectiveSentence);\n}"' [languages]="['javascript']"></code>
+</pre>
+
+<!-- <input
   type="text"
   name="objectiveSentence"
   nbInput
   fullWidth
   [(ngModel)]="objectiveSentence"
-  (input)="onChangeObjective()"
-/>
+  (input)="onUpdateRandomSentence()"
+/> -->
 
+<p class="paragraph">{{ fittest }}</p>
+<p class="paragraph">{{ fittestScore }}</p>
 <app-genetic-environment
+  [geneticAlgorithm]="geneticAlgorithm"
   (start)="onStartEnvironment()"
   (stop)="onStopEnvironment()"
 >
