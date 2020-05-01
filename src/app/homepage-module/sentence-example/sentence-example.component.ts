@@ -5,10 +5,8 @@ import {
   OnInit,
 } from '@angular/core';
 import {
-  DynamicalCrossover,
   FitnessFunctionObjective,
   GeneticAlgorithm,
-  NoMutation,
   Population,
 } from 'genetically';
 @Component({
@@ -21,7 +19,6 @@ export class SentenceExampleComponent implements OnInit {
   public objectiveSentence = 'Earth has few secrets from the birds';
   public randomSentence = '';
   public geneticAlgorithm: GeneticAlgorithm<string, string>;
-  public fittest: string;
   public fittestScore: number;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
@@ -29,12 +26,10 @@ export class SentenceExampleComponent implements OnInit {
   ngOnInit() {
     this.onUpdateRandomSentence();
     this.createGeneticAlgorithm();
-
-    console.log('fitness', this.fitness('azdaz41da7z4 5d1az', ''));
+    this.changeDetectorRef.markForCheck();
   }
 
   onStartEnvironment() {
-    this.fittest = '';
     console.log('start');
   }
   onStopEnvironment() {
@@ -102,11 +97,7 @@ export class SentenceExampleComponent implements OnInit {
         // crossover: new NoCrossover(),
         objective: FitnessFunctionObjective.MINIMIZE,
         iterations: 2500,
-        afterEach: (pop: Population<string>) => {
-          this.fittest = pop.fittest.chain;
-          this.fittestScore = pop.fittest.fitnessScore;
-          console.log(this.fittest.length);
-          this.changeDetectorRef.markForCheck();
+        waitBetweenIterations: () => {
           return new Promise((resolve, reject) => {
             setTimeout(() => {
               resolve();
@@ -118,6 +109,7 @@ export class SentenceExampleComponent implements OnInit {
         },
       }
     );
+
     this.changeDetectorRef.markForCheck();
   }
 
@@ -163,7 +155,7 @@ export class SentenceExampleComponent implements OnInit {
    * Fitness function of a given sentence is it's distance to the objective sentence
    */
   fitness(sentence: string, objectiveSentence: string): number {
-    return [...sentence].reduce((acc, curr, i) => {
+    return sentence.split('').reduce((acc, curr, i) => {
       const objCode = objectiveSentence.toLowerCase().charCodeAt(i) || 96;
       const curCode = curr.charCodeAt(0) || 96;
       const delta = Math.abs(objCode - curCode);

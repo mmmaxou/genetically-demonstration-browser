@@ -26,6 +26,7 @@
     "eva-icons": "^1.1.2",
     "flexboxgrid-sass": "^8.0.5",
     "highlight.js": "^9.17.1",
+    "ng5-slider": "^1.2.4",
     "ngx-highlightjs": "^4.0.2",
     "rfs": "^9.0.3",
     "rxjs": "~6.5.5",

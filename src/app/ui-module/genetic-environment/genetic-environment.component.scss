@@ -1,0 +1,63 @@
+@import '../../../theme.scss';
+@import '~rfs/scss';
+
+.environment {
+  padding: 1.75rem;
+  margin-bottom: 2.25rem;
+
+  border: 1px solid nb-theme(color-basic-500);
+}
+
+.bottom-line {
+  display: flex;
+  justify-content: space-between;
+}
+
+::ng-deep {
+  .environment .ng5-slider .ng5-slider-pointer {
+    width: 16px;
+    height: 16px;
+    top: -6px;
+    border-radius: 50%;
+
+    &::after {
+      width: 4px;
+      height: 4px;
+      top: 6px;
+      left: 6px;
+    }
+  }
+}
+
+.excerpt {
+  text-align: center;
+
+  p {
+    @include rfs(1.5rem);
+  }
+
+  .decoded {
+    font-weight: bold;
+  }
+
+  .caption {
+    text-align: left;
+  }
+}
+
+.info {
+  margin-top: 2.25rem;
+
+  .row div {
+    .text {
+      @include rfs(1.5rem);
+    }
+
+    &::before {
+      content: attr(data-name);
+      display: inline-block;
+      font-size: 80%;
+      color: nb-theme(color-basic-600);
+    }
+  }
+}

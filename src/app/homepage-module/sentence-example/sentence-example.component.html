@@ -70,7 +70,7 @@
 </p>
 
 <pre>
-  <code [highlight]='"function fitness(sentence, objectiveSentence) {\n   return levenshtein(sentence, objectiveSentence);\n}"' [languages]="['javascript']"></code>
+  <code [highlight]='fitness | functionName: "fitness"' [languages]="['javascript']"></code>
 </pre>
 
 <!-- <input
@@ -82,8 +82,6 @@
   (input)="onUpdateRandomSentence()"
 /> -->
 
-<p class="paragraph">{{ fittest }}</p>
-<p class="paragraph">{{ fittestScore }}</p>
 <app-genetic-environment
   [geneticAlgorithm]="geneticAlgorithm"
   (start)="onStartEnvironment()"

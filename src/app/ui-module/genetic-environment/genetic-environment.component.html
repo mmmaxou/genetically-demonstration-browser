@@ -1,25 +1,102 @@
-<div class="holder">
-  <p class="caption">Environment is {{ status }}</p>
-  <button
-    nbButton
-    ghost
-    size="small"
-    status="success"
-    (click)="runEnv()"
-    *ngIf="!isRunning"
-  >
-    <nb-icon icon="play-circle-outline"></nb-icon>
-    Start
-  </button>
-  <button
-    nbButton
-    ghost
-    size="small"
-    status="danger"
-    (click)="stopEnv()"
-    *ngIf="isRunning"
-  >
-    <nb-icon icon="close-circle-outline"></nb-icon>
-    Stop
-  </button>
+<div class="environment">
+  <div *ngIf="shallDisplayExcerpt" class="excerpt">
+    <p class="decoded" title="Decoded">{{ excerptDecoded }}</p>
+    <p class="encoded" title="Encoded">{{ excerptEncoded }}</p>
+  </div>
+
+  <div *ngIf="shallDisplayControl" class="controls">
+    <div class="row">
+      <div class="col-xs">
+        <ng5-slider
+          name="range-popsize"
+          [(value)]="popSizeValue"
+          [options]="popSizeOptions"
+          (userChange)="popSizeChange($event)"
+        ></ng5-slider>
+        <label class="caption" for="range-popsize">Population size</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs">
+        <ng5-slider
+          name="range-iterations"
+          [(value)]="iterationsValue"
+          [options]="iterationsOptions"
+          (userChange)="iterationsChange($event)"
+        ></ng5-slider>
+        <label class="caption" for="range-iterations">Iterations</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs">
+        <ng5-slider
+          name="range-delay"
+          [(value)]="delayValue"
+          [options]="delayOptions"
+          (userChange)="delayChange($event)"
+        ></ng5-slider>
+        <label class="caption" for="range-delay">
+          Delay between iterations
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="shallDisplayInfo" class="info">
+    <div class="row">
+      <div class="col-xs iteration" data-name="iteration">
+        <span class="text">
+          {{ iteration }}
+        </span>
+      </div>
+      <div class="col-xs fitness-max" data-name="best fitness">
+        <span class="text">
+          {{ fitnessMax | number: '1.0-1' }}
+        </span>
+      </div>
+      <div class="col-xs fitness-mean" data-name="fitness mean">
+        <span class="text">
+          {{ fitnessMean | number: '1.0-1' }}
+        </span>
+      </div>
+      <div class="col-xs fitness-sum" data-name="fitness sum">
+        <span class="text">
+          {{ fitnessSum | number: '1.0-1' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-line">
+    <p class="subtitle">Genetic algorithm is {{ status }}</p>
+
+    <button
+      nbButton
+      ghost
+      size="small"
+      status="success"
+      (click)="runEnv()"
+      *ngIf="!isRunning"
+    >
+      <nb-icon icon="play-circle-outline"></nb-icon>
+      Start
+    </button>
+    <button
+      nbButton
+      ghost
+      size="small"
+      status="danger"
+      (click)="pauseEnv()"
+      *ngIf="isRunning"
+    >
+      <nb-icon icon="pause-circle-outline"></nb-icon>
+      Pause
+    </button>
+  </div>
+  <div class="row">
+    <div class="col-xs">
+      <nb-progress-bar [value]="+progression" status="info" size="small">
+      </nb-progress-bar>
+    </div>
+  </div>
 </div>
