@@ -9,8 +9,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import {GeneticAlgorithm, Population} from 'genetically';
-import {Unsubscribe} from 'genetically/build/main/lib/Helpers/NanoEvents';
+import {GeneticAlgorithm, Population, Unsubscribe} from 'genetically';
 import {EChartOption} from 'echarts';
 import {Options} from 'ng5-slider';
 
