@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --live-reload false",
-    "build": "ng build --prod --base-href \"https://mmmaxou.github.io/genetically-demonstration-browser\"",
-    "deploy": "ng deploy --base-href \"https://mmmaxou.github.io/genetically-demonstration-browser\"",
+    "build": "ng build --prod --base-href \"genetically-demonstration-browser\"",
+    "deploy": "ng deploy --base-href \"genetically-demonstration-browser\"",
     "lint": "ng lint"
   },
   "private": true,
