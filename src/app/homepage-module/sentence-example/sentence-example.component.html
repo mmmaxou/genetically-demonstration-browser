@@ -82,9 +82,30 @@
   (input)="onUpdateRandomSentence()"
 /> -->
 
+<h3># Putting it all together</h3>
+<p>
+  With all thoses functions described, we are now ready to code code our first
+  GeneticAlgorithm.
+</p>
+
+<pre>
+  <code [highlight]='functionCodeGeneticAlgorithm' [languages]="['javascript']"></code>
+</pre>
+
+<h3># Evolution !!</h3>
+
+<p>
+  Now press the start button and watch the population evolve !
+</p>
+
 <app-genetic-environment
   [geneticAlgorithm]="geneticAlgorithm"
   (start)="onStartEnvironment()"
   (stop)="onStopEnvironment()"
 >
 </app-genetic-environment>
+
+<p>
+  Right now, you should see the fitness goes down to 32. Which is the minimum
+  value it can achieve, and therefore it's best value.
+</p>

@@ -10,6 +10,7 @@ import {
   Population,
   NoMutation,
 } from 'genetically';
+import {CodeCreateGeneticAlgorithm} from './Code';
 @Component({
   selector: 'app-sentence-example',
   templateUrl: './sentence-example.component.html',
@@ -21,6 +22,7 @@ export class SentenceExampleComponent implements OnInit {
   public randomSentence = '';
   public geneticAlgorithm: GeneticAlgorithm<string, string>;
   public fittestScore: number;
+  public functionCodeGeneticAlgorithm = CodeCreateGeneticAlgorithm;
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
@@ -48,9 +50,7 @@ export class SentenceExampleComponent implements OnInit {
       this.encode,
       this.decode,
       () => this.generateRandomSentence(this.objectiveSentence.length),
-      (sentence) => {
-        return this.fitness(sentence, this.objectiveSentence);
-      },
+      (sentence) => this.fitness(sentence, this.objectiveSentence),
       {
         population: {
           popsize: 1,
@@ -83,7 +83,6 @@ export class SentenceExampleComponent implements OnInit {
             return mStr;
           });
         },
-        // crossover: new NoCrossover(),
         objective: FitnessFunctionObjective.MINIMIZE,
         iterations: 2500,
         waitBetweenIterations: () => {
@@ -94,7 +93,7 @@ export class SentenceExampleComponent implements OnInit {
           });
         },
         stopCondition: (pop: Population<string>) => {
-          return pop.fittest.fitnessScore === 0;
+          return pop.fittest.fitnessScore <= 32;
         },
       }
     );

@@ -139,8 +139,6 @@ export class GeneticEnvironmentComponent implements OnInit, OnDestroy {
       this.fitnessSum = population.sumFitness;
       this.iterationArr.push('' + i);
       this.fitnessMaxArr.push({name: '' + i, value: this.fitnessMax});
-      this.fitnessMeanArr.push({name: '' + i, value: this.fitnessMean});
-      this.fitnessSumArr.push({name: '' + i, value: this.fitnessSum});
 
       // Echarts
       this.updateOptions = {
@@ -299,6 +297,8 @@ export class GeneticEnvironmentComponent implements OnInit, OnDestroy {
       this.start.emit();
       this.geneticAlgorithm.run().then(() => {
         this.stop.emit();
+        this.status = 'Stopped';
+        this.changeDetectorRef.markForCheck();
       });
     }
   }

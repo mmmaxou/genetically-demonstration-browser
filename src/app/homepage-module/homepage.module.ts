@@ -8,9 +8,10 @@ import {HomeComponent} from './home/home.component';
 import {HomepageRoutingModule} from './homepage-routing.module';
 import {SentenceExampleComponent} from './sentence-example/sentence-example.component';
 import {CoreModule} from '../core-module/core.module';
+import { IntroductionComponent } from './introduction/introduction.component';
 
 @NgModule({
-  declarations: [HomeComponent, SentenceExampleComponent],
+  declarations: [HomeComponent, SentenceExampleComponent, IntroductionComponent],
   imports: [
     // Standard
     CommonModule,
