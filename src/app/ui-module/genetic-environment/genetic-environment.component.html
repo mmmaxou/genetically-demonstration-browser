@@ -65,6 +65,19 @@
         </span>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-xs">
+        <div class="echarts-wrapper">
+          <echarts
+            [options]="options"
+            [initOpts]="initOpts"
+            [merge]="updateOptions"
+            theme="macarons"
+          ></echarts>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="bottom-line">

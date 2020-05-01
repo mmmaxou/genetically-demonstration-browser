@@ -8,6 +8,7 @@ import {
   FitnessFunctionObjective,
   GeneticAlgorithm,
   Population,
+  NoMutation,
 } from 'genetically';
 @Component({
   selector: 'app-sentence-example',
@@ -54,19 +55,7 @@ export class SentenceExampleComponent implements OnInit {
         population: {
           popsize: 1,
         },
-        mutation: (chain: string) => {
-          const asArr = chain.split('');
-          const randomChainIndex = Math.ceil(Math.random() * chain.length - 1);
-          const charCode =
-            chain.replace(' ', '{').charCodeAt(randomChainIndex) - 97;
-          const nChar = String.fromCharCode(((charCode + 1) % 26) + 97).replace(
-            '{',
-            ' '
-          );
-          asArr[randomChainIndex] = nChar;
-          // asArr[randomChainIndex] = this.objectiveSentence[randomChainIndex];
-          return asArr.join('');
-        },
+        mutation: new NoMutation(),
         crossover: (chains: string[], mutation) => {
           return chains.map((chain) => {
             const asArr = chain.split('');

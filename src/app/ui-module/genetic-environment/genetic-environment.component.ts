@@ -1,17 +1,18 @@
 // tslint:disable: variable-name
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
-  ChangeDetectorRef,
-  OnDestroy,
 } from '@angular/core';
 import {GeneticAlgorithm, Population} from 'genetically';
-import {Options} from 'ng5-slider';
 import {Unsubscribe} from 'genetically/build/main/lib/Helpers/NanoEvents';
+import {EChartOption} from 'echarts';
+import {Options} from 'ng5-slider';
 
 type GeneticEnvironmentStatus = 'Running' | 'Stopped' | 'Paused';
 
@@ -29,14 +30,97 @@ export class GeneticEnvironmentComponent implements OnInit, OnDestroy {
   fitnessMax = 0;
   fitnessMean = 0;
   fitnessSum = 0;
+  iterationArr: any[] = [];
+  fitnessMaxArr: {name: string; value: number}[] = [];
+  fitnessMeanArr: {name: string; value: number}[] = [];
+  fitnessSumArr: {name: string; value: number}[] = [];
   public status: GeneticEnvironmentStatus = 'Stopped';
   private _geneticAlgorithm: GeneticAlgorithm<any>;
   private _unsub: Unsubscribe;
+
+  updateOptions: EChartOption = {};
+
+  options: EChartOption = {
+    title: {
+      text: 'Fitness evolution',
+    },
+
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true,
+    },
+
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        animation: false,
+      },
+      formatter: 'Iteration {b}<br/>{a} : {c}',
+    },
+
+    dataZoom: [
+      {
+        type: 'inside',
+        start: 10,
+        end: 100,
+      },
+      {
+        start: 10,
+        end: 100,
+        handleIcon:
+          // tslint:disable-next-line: max-line-length
+          'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+        handleSize: '80%',
+        handleStyle: {
+          color: '#fff',
+          shadowBlur: 3,
+          shadowColor: 'rgba(0, 0, 0, 0.6)',
+          shadowOffsetX: 2,
+          shadowOffsetY: 2,
+        },
+      },
+    ],
+
+    xAxis: {
+      type: 'category',
+      data: [],
+      splitLine: {
+        show: false,
+      },
+    },
+
+    yAxis: {
+      type: 'value',
+      splitLine: {
+        show: true,
+      },
+    },
+
+    series: [
+      {
+        name: 'Best fitness',
+        type: 'line',
+        sampling: 'average',
+        hoverAnimation: false,
+        showSymbol: false,
+        data: [],
+      },
+    ],
+  };
+
+  initOpts = {
+    renderer: 'canvas',
+    width: 600,
+    height: 400,
+  };
 
   @Output() stop = new EventEmitter();
   @Output() start = new EventEmitter();
   @Output() population = new EventEmitter<Population>();
 
+  @Input() useChart = true;
   @Input() useInfos = true;
   @Input() useOptions = true;
   @Input() useExcerpt = true;
@@ -48,12 +132,30 @@ export class GeneticEnvironmentComponent implements OnInit, OnDestroy {
     this.changeDetectorRef.markForCheck();
 
     this._unsub = this.geneticAlgorithm.onPeek((population, i) => {
+      // Basic infos
       this.iteration = i;
       this.fitnessMax = population.fittest.fitnessScore;
       this.fitnessMean = population.meanFitness;
       this.fitnessSum = population.sumFitness;
+      this.iterationArr.push('' + i);
+      this.fitnessMaxArr.push({name: '' + i, value: this.fitnessMax});
+      this.fitnessMeanArr.push({name: '' + i, value: this.fitnessMean});
+      this.fitnessSumArr.push({name: '' + i, value: this.fitnessSum});
 
-      this.changeDetectorRef.markForCheck();
+      // Echarts
+      this.updateOptions = {
+        xAxis: {
+          data: this.iterationArr,
+        },
+        series: [
+          {
+            data: this.fitnessMaxArr,
+          },
+        ],
+      };
+      if (i % 10 === 0) {
+        this.changeDetectorRef.markForCheck();
+      }
     });
   }
   get geneticAlgorithm() {
@@ -88,6 +190,10 @@ export class GeneticEnvironmentComponent implements OnInit, OnDestroy {
 
   get isPaused(): boolean {
     return this.status === 'Paused';
+  }
+
+  get shallDisplayChart(): boolean {
+    return this.useChart && !!this.geneticAlgorithm;
   }
 
   get shallDisplayControl(): boolean {
